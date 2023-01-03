@@ -12,8 +12,6 @@ import java.util.Map.Entry;
 import java.util.Scanner;
 
 public class SchoolSystem {
-	private static final String Sysetm = null;
-
 	public static void main(String[] args) throws IOException {
 
 		Scanner scan = new Scanner(System.in);
@@ -21,22 +19,25 @@ public class SchoolSystem {
 		HashMap<Integer, String[]> student = new HashMap<Integer, String[]>();
 		String[] StudentInf = new String[2];
 		Integer key;
+		
 		System.out.println("*********************************************************");
 		System.out.println("Welcomt to School Management System ");
 		System.out.println("Select an action ");
 		System.out.println("1. Register student ");
 		System.out.println("2. Search for a students ");
-		System.out.println("3. Retain Student information ");
+		System.out.println("3. List all Student information ");
+		System.out.println("4. update student information.");
+		System.out.println("5. Delete student information.");
 		System.out.println("*********************************************************");
-		int userChoice = scan.nextInt();
+		int userChoice = Integer.parseInt(scan.nextLine());
 
 		if (userChoice == 1) {
 			System.out.println("You can register a Student; ");
 			key = getnewStudentID("Student.csv");
 			System.out.println("Enter Student Name : ");
-			String studentName = scan.next(); // to get student Name
+			String studentName = scan.nextLine(); // to get student Name
 			System.out.println("Enter Student Email : ");
-			String StudentEmail = scan.next(); // to get student Email
+			String StudentEmail = scan.nextLine(); // to get student Email
 			writer.write((key.toString()));
 			writer.append(",");
 			writer.write(studentName);
@@ -48,7 +49,7 @@ public class SchoolSystem {
 			scan.close();
 		} else if (userChoice == 2) {
 			System.out.println("Enter the student ID : ");
-			int ID = scan.nextInt();
+			int ID = Integer.parseInt(scan.nextLine());
 			store(student);
 			for (Entry<Integer, String[]> entry : student.entrySet())
 				if (entry.getKey() == ID)
@@ -63,7 +64,37 @@ public class SchoolSystem {
 			}
 			System.out.println("*********************************************************");
 			textFile.close();
-		} else {
+		} 
+		else if (userChoice == 4) {//update student information
+			System.out.println("Enter the student ID to be updated : ");
+			Integer ID = Integer.parseInt(scan.nextLine());
+			store(student);
+                 if(student.containsKey(ID)) {
+					System.out.println("Enter the name to be updated : ");
+					String name = scan.nextLine();
+					System.out.println("Enter the new email to be updated : ");
+			        String newEmail = scan.nextLine();
+//			        StudentInf[1] = name;
+//			        StudentInf[2] = newEmail;
+			        String[] newStudent = {ID.toString(),name,newEmail};
+			        student.put(ID, newStudent);
+			        System.out.println("update Done");
+			        writeToFile(student);
+                 }
+			scan.close();
+		}
+		else if (userChoice == 5) {//Delete student information
+			System.out.println("Enter the student ID to be deleted : ");
+			int ID = Integer.parseInt(scan.nextLine());
+			store(student);
+			 if(student.containsKey(ID))
+				{
+					student.remove(ID);
+					System.out.println("Deleted done");
+					writeToFile(student);
+				}
+		}
+		else {
 			System.out.println("wrong selection");
 
 		}
@@ -71,10 +102,10 @@ public class SchoolSystem {
 	}// End of main class
 
 	public static Integer getnewStudentID(String fileLocation) throws IOException {
-		int newStudentID = 0;
+		int newStudentID = 100;
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(fileLocation));
-			String line;
+			String line; //count how many lines we have in a file 
 			while ((line = reader.readLine()) != null) {
 				newStudentID++;
 			}
@@ -82,7 +113,7 @@ public class SchoolSystem {
 		} catch (FileNotFoundException e) {
 			System.out.println("The file not found" + e);
 		}
-		return newStudentID + 1;
+		return newStudentID;
 	}
 
 	public static void store(HashMap<Integer, String[]> info) throws IOException {
@@ -98,4 +129,20 @@ public class SchoolSystem {
 			System.out.println("The file not found" + e);
 		}
 	}
+	
+	public static void writeToFile(HashMap<Integer, String[]> info) throws IOException {
+		PrintWriter writer = new PrintWriter("Student.csv");
+		for (Entry<Integer, String[]> entry : info.entrySet()) 
+		{
+			String [] values = entry.getValue();
+			for(int i = 0 ; i< values.length ; i++)
+			{
+				writer.write(values[i]);
+			    writer.append(",");
+			}
+			writer.append("\n");
+		}
+		writer.close();
+	}
+
 }// End of SchoolSystem
