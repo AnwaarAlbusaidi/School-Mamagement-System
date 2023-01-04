@@ -147,7 +147,6 @@ public class SchoolSystem {
 	/**
 	 * This Method will write data from a hash map to a file when update or delete
 	 * done
-	 * 
 	 * @param info (Info is a hash map)
 	 * @throws IOException
 	 */
@@ -163,5 +162,5 @@ public class SchoolSystem {
 		}
 		writer.close();
 	}
-
+	
 }// End of SchoolSystem
